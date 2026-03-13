@@ -16,14 +16,12 @@
       height: 100vh;
       margin: 0;
     }
-
     h1 {
       font-weight: 600;
       font-size: 2rem;
       margin-bottom: 30px;
       text-align: center;
     }
-
     button {
       background-color: #2c2c2e;
       color: #ffffff;
@@ -35,22 +33,14 @@
       transition: background-color 0.2s, transform 0.1s;
       font-weight: 500;
     }
-
     button:disabled {
       background-color: #555555;
       cursor: not-allowed;
     }
-
     button:hover:not(:disabled) {
       background-color: #3a3a3c;
       transform: translateY(-2px);
     }
-
-    button:active:not(:disabled) {
-      transform: translateY(0);
-      background-color: #2c2c2e;
-    }
-
     p {
       margin-top: 15px;
       font-size: 18px;
@@ -60,25 +50,31 @@
 </head>
 <body>
 
-  <h1>Select this button, if you don't know why you live.</h1>
-  <button id="clickButton">Why i need to live?</button>
+  <h1>Привет! Это ChatGPT Dark Style</h1>
+  <button id="clickButton">Зачем?</button>
   <p>Нажато: <span id="count">0</span> раз</p>
 
   <script>
     const button = document.getElementById('clickButton');
     const countDisplay = document.getElementById('count');
 
-    // Проверяем, нажимал ли пользователь раньше
+    // Проверка, нажимал ли пользователь ранее
     let clicked = localStorage.getItem('userClicked') === 'true';
 
-    if (clicked) {
-      button.disabled = true;
-      countDisplay.textContent = 1; // показываем что уже нажали
+    async function updateCount() {
+      const res = await fetch('/api/counter');
+      const data = await res.json();
+      countDisplay.textContent = data.count;
     }
 
-    button.addEventListener('click', () => {
+    // Инициализация
+    updateCount();
+
+    button.addEventListener('click', async () => {
       if (!clicked) {
-        countDisplay.textContent = 1;
+        const res = await fetch('/api/counter', { method: 'POST' });
+        const data = await res.json();
+        countDisplay.textContent = data.count;
         button.disabled = true;
         localStorage.setItem('userClicked', 'true');
         clicked = true;
